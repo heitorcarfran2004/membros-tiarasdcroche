@@ -1,65 +1,94 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import Logo from '@/components/Logo'
+import LogoutButton from '@/components/LogoutButton'
+import InstallButton from '@/components/InstallButton'
+import { getSession } from '@/lib/current-user'
+import { getVisibleProducts, type VisibleProduct } from '@/lib/members'
 
-export default function Home() {
+export const dynamic = 'force-dynamic'
+
+function ProductCard({ product }: { product: VisibleProduct }) {
+  const locked = !product.unlocked
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div
+      className={`relative flex flex-col justify-between rounded-2xl border p-4 shadow-sm transition ${
+        locked
+          ? 'border-[var(--border)] bg-[var(--background)]'
+          : 'border-[var(--border)] bg-card hover:shadow-md'
+      }`}
+    >
+      <div>
+        <h3 className="pr-7 text-base font-semibold leading-snug text-[var(--foreground)]">
+          {product.title}
+        </h3>
+        {locked && (
+          <span className="absolute right-3 top-3 text-lg" aria-label="Bloqueado" title="Bloqueado">
+            🔒
+          </span>
+        )}
+      </div>
+      <div className="mt-4">
+        {locked ? (
+          <span className="inline-flex w-full items-center justify-center rounded-xl bg-[var(--border)]/60 px-4 py-2.5 text-sm font-medium text-[var(--muted)]">
+            Bloqueado
+          </span>
+        ) : (
+          <Link
+            href={`/produto/${product.slug}`}
+            className="inline-flex w-full items-center justify-center rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--brand-strong)]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Acessar
+          </Link>
+        )}
+      </div>
     </div>
-  );
+  )
+}
+
+function Section({ title, products }: { title: string; products: VisibleProduct[] }) {
+  if (!products.length) return null
+  return (
+    <section className="mt-8">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-[var(--brand-strong)]">
+        {title}
+      </h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export default async function DashboardPage() {
+  const session = await getSession()
+  if (!session) redirect('/login')
+
+  const products = await getVisibleProducts(session.mid)
+  const main = products.filter((p) => p.kind === 'main')
+  const bonus = products.filter((p) => p.kind === 'bonus')
+  const bumps = products.filter((p) => p.kind === 'bump')
+
+  return (
+    <main className="mx-auto w-full max-w-3xl px-5 pb-16 pt-6">
+      <header className="flex items-center justify-between gap-3">
+        <Logo size={56} />
+        <div className="flex items-center gap-2">
+          <InstallButton />
+          <LogoutButton />
+        </div>
+      </header>
+
+      <div className="mt-6 rounded-2xl border border-[var(--border)] bg-card p-4">
+        <p className="text-sm text-[var(--muted)]">Bem-vinda de volta 💕</p>
+        <p className="truncate text-base font-semibold text-[var(--brand-strong)]">{session.email}</p>
+      </div>
+
+      <Section title="Seu produto" products={main} />
+      <Section title="Bônus inclusos" products={bonus} />
+      <Section title="Módulos extras" products={bumps} />
+    </main>
+  )
 }

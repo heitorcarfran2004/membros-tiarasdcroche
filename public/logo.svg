@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 140" width="360" height="140" role="img" aria-label="Tiara's de Crochê">
+  <g fill="none">
+    <circle cx="40" cy="70" r="26" fill="#ec4899"/>
+    <circle cx="40" cy="70" r="26" fill="none" stroke="#ffffff" stroke-width="3" stroke-dasharray="6 7"/>
+    <path d="M40 60c-6-9-20-5-20 5 0 8 12 14 20 21 8-7 20-13 20-21 0-10-14-14-20-5z" fill="#e5322d"/>
+  </g>
+  <text x="86" y="62" font-family="Geist, system-ui, Arial, sans-serif" font-size="42" font-weight="800" fill="#e6447a">Tiara's</text>
+  <text x="86" y="104" font-family="Geist, system-ui, Arial, sans-serif" font-size="34" font-weight="800" fill="#d12d6b">de Crochê</text>
+</svg>
