@@ -10,8 +10,11 @@ export default async function LoginPage() {
   if (session) redirect('/')
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-5 py-10">
-      <div className="w-full rounded-3xl border border-[var(--border)] bg-card p-6 shadow-sm">
+    <main
+      className="flex min-h-dvh w-full flex-col items-center justify-center px-5 py-10"
+      style={{ background: 'linear-gradient(160deg, #ff3773 0%, #fb8cb7 100%)' }}
+    >
+      <div className="mx-auto w-full max-w-md rounded-3xl border border-[var(--border)] bg-card p-6 shadow-sm">
         <Logo size={120} className="mx-auto mb-4 drop-shadow" />
         <h1 className="mb-1 text-center text-xl font-bold text-[var(--brand-strong)]">
           Acesse seus Produtos
