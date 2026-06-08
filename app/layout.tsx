@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     title: "Tiara's de Crochê",
   },
   icons: {
-    icon: "/icon-192.png",
-    apple: "/icon-192.png",
+    icon: "/favicon.png",
+    apple: "/apple-icon.png",
   },
 };
 

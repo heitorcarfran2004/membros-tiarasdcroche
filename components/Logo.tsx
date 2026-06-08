@@ -3,7 +3,7 @@
 export default function Logo({ className = '', size = 96 }: { className?: string; size?: number }) {
   return (
     <img
-      src="/logo.svg"
+      src="/logo.png"
       alt="Tiara's de Crochê"
       height={size}
       className={className}
