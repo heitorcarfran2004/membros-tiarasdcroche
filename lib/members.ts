@@ -8,6 +8,8 @@ export type Product = {
   title: string
   kind: ProductKind
   sort_order: number
+  image_path: string | null
+  checkout_url: string | null
 }
 
 export type VisibleProduct = Product & { unlocked: boolean }
@@ -32,7 +34,11 @@ export async function getMemberByEmail(email: string) {
 export async function getVisibleProducts(memberId: string): Promise<VisibleProduct[]> {
   const db = supabaseAdmin()
   const [{ data: products }, { data: ents }] = await Promise.all([
-    db.from('products').select('id, slug, title, kind, sort_order').eq('active', true).order('sort_order'),
+    db
+      .from('products')
+      .select('id, slug, title, kind, sort_order, image_path, checkout_url')
+      .eq('active', true)
+      .order('sort_order'),
     db.from('entitlements').select('product_id').eq('member_id', memberId),
   ])
 
